@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap');
+
+:root{
+  --bg: #0e1113;
+  --panel: #0f1417;
+  --muted: #9aa6ad;
+  --accent: #5fbffd;
+  --text: #e6eef3;
+}
+
+/* global */
+html,body,#__next { height:100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+/* Card / panel */
+.card {
+  background: linear-gradient(180deg, rgba(16,20,23,0.7), rgba(10,12,14,0.6));
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(3,6,8,0.6);
+}
+
+/* Buttons */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(90deg,var(--accent), #3f83c9);
+  color: #04202b;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* small helpers */
+.hint { color: var(--muted); font-size: 0.95rem; }
