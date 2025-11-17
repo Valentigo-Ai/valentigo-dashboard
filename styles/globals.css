@@ -2,44 +2,200 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import fonts */
+/* --------------------------------------------- */
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap');
 
-:root{
+/* --------------------------------------------- */
+/* Root Variables (Dark Mode Default) */
+:root {
+  /* Color Palette */
   --bg: #0e1113;
-  --panel: #0f1417;
+  --panel: #121618;
   --muted: #9aa6ad;
   --accent: #5fbffd;
+  --accent-2: #7ed0ff;
   --text: #e6eef3;
+
+  /* Effects */
+  --radius: 14px;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --blur: 10px;
+
+  /* Transitions */
+  --transition: 0.35s ease;
 }
 
-/* global */
-html,body,#__next { height:100%; }
+/* --------------------------------------------- */
+/* Light Mode — Enhanced Blue Pop */
+.light {
+  --bg: #F5F8FC;              /* Slightly cooler background */
+  --panel: #FFFFFF;           /* Clean white */
+  --muted: #6E7681;           /* Softer neutral gray */
+  --text: #0A0F18;            /* Deep navy text */
+
+  /* Vibrant Valentigo Blue */
+  --accent: #3A9CFF;          /* Main vivid blue */
+  --accent-2: #5EBBFF;        /* Lighter gradient tone */
+
+  /* Depth + Glow */
+  --shadow: 0 4px 18px rgba(58, 156, 255, 0.08);
+}
+
+/* --------------------------------------------- */
+/* Global Styles */
+html,
+body,
+#__next {
+  height: 100%;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
-/* Card / panel */
+/* --------------------------------------------- */
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+.light ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* --------------------------------------------- */
+/* Panels / Cards */
 .card {
-  background: linear-gradient(180deg, rgba(16,20,23,0.7), rgba(10,12,14,0.6));
-  border: 1px solid rgba(255,255,255,0.03);
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(3,6,8,0.6);
+  background: linear-gradient(180deg, rgba(20, 24, 28, 0.9), rgba(12, 14, 16, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: all var(--transition);
+  backdrop-filter: blur(var(--blur));
 }
 
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(95, 191, 253, 0.15);
+  border-color: rgba(95, 191, 253, 0.25);
+}
+
+/* Light Mode Cards */
+.light .card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3F8FF 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 16px rgba(58, 156, 255, 0.05);
+}
+
+.light .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(58, 156, 255, 0.12);
+  border-color: rgba(58, 156, 255, 0.15);
+}
+
+/* --------------------------------------------- */
 /* Buttons */
 .btn {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  background: linear-gradient(90deg,var(--accent), #3f83c9);
-  color: #04202b;
-  padding: .5rem 1rem;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 10px;
   font-weight: 600;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #041a25;
+  transition: transform var(--transition), filter var(--transition), box-shadow var(--transition);
 }
 
-/* small helpers */
-.hint { color: var(--muted); font-size: 0.95rem; }
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 4px 14px rgba(58, 156, 255, 0.35);
+}
+
+.btn:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* --------------------------------------------- */
+/* Sidebar + Header */
+aside,
+header {
+  background: var(--panel);
+  border-color: rgba(255, 255, 255, 0.05);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+aside {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Light mode sidebar/header */
+.light aside {
+  background: var(--panel);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.light header {
+  background: var(--panel);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Highlight active sidebar item */
+.light .active-link,
+.light .sidebar-item.active {
+  background: rgba(58, 156, 255, 0.12);
+  border-left: 3px solid var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+  transition: all var(--transition);
+}
+
+/* --------------------------------------------- */
+/* Text Helpers */
+.hint {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+a {
+  color: var(--accent);
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--accent-2);
+  text-shadow: 0 0 6px rgba(58, 156, 255, 0.3);
+}
+
+/* --------------------------------------------- */
+/* Utility Animations */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s forwards ease-in-out;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.glow {
+  text-shadow: 0 0 12px var(--accent);
+}

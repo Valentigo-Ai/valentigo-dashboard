@@ -1,29 +1,87 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { supabase } from '../lib/supabase'
 
-export default function Login(){
-  const [email,setEmail] = useState('');
-  const router = useRouter();
+export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [message, setMessage] = useState('')
 
-  const submit = (e) => {
-    e.preventDefault();
-    localStorage.setItem('valentigo_user', JSON.stringify({email}));
-    router.push('/');
+  // Handle sign-in
+  async function handleLogin(e) {
+    e.preventDefault()
+    setMessage('')
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      setMessage(error.message)
+    } else {
+      setMessage('✅ Logged in successfully! Redirecting...')
+      setTimeout(() => router.push('/'), 1500)
+    }
+  }
+
+  // Handle sign-up
+  async function handleSignup(e) {
+    e.preventDefault()
+    setMessage('')
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+
+    if (error) {
+      setMessage(error.message)
+    } else {
+      setMessage('📧 Check your email to confirm your account!')
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-vgbg">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <Image src="/logo.png" alt="Valentigo" width={220} height={60} />
-        </div>
-        <form onSubmit={submit} className="card p-8">
-          <h1 className="text-2xl font-semibold" style={{color:"var(--accent)"}}>Welcome to Valentigo — AI Solutions for Estate Agents</h1>
-          <label className="block mt-4" style={{color:"#9aa6ad"}}>Email</label>
-          <input type="email" className="mt-1 px-3 py-2 rounded-md border w-full bg-transparent text-white" value={email} onChange={e=>setEmail(e.target.value)} required />
-          <button className="mt-6 btn w-full">Sign in</button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center">🔐 Login / Sign Up</h1>
+
+        <form className="space-y-4" onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          >
+            Sign In
+          </button>
         </form>
+
+        <button
+          onClick={handleSignup}
+          className="w-full mt-4 bg-gray-200 py-2 rounded hover:bg-gray-300"
+        >
+          Create Account
+        </button>
+
+        {message && (
+          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
+        )}
       </div>
     </div>
   )
