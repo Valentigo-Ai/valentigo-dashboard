@@ -1,201 +1,125 @@
+/* styles/globals.css */
+
+/* Tailwind layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* --------------------------------------------- */
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap');
-
-/* --------------------------------------------- */
-/* Root Variables (Dark Mode Default) */
+/* Accent color */
 :root {
-  /* Color Palette */
-  --bg: #0e1113;
-  --panel: #121618;
-  --muted: #9aa6ad;
-  --accent: #5fbffd;
-  --accent-2: #7ed0ff;
-  --text: #e6eef3;
-
-  /* Effects */
-  --radius: 14px;
-  --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  --blur: 10px;
-
-  /* Transitions */
-  --transition: 0.35s ease;
+  --accent: #3a9cff;
 }
 
-/* --------------------------------------------- */
-/* Light Mode — Enhanced Blue Pop */
-.light {
-  --bg: #F5F8FC;              /* Slightly cooler background */
-  --panel: #FFFFFF;           /* Clean white */
-  --muted: #6E7681;           /* Softer neutral gray */
-  --text: #0A0F18;            /* Deep navy text */
+/* ---------------------- */
+/*        BASE LAYOUT      */
+/* ---------------------- */
 
-  /* Vibrant Valentigo Blue */
-  --accent: #3A9CFF;          /* Main vivid blue */
-  --accent-2: #5EBBFF;        /* Lighter gradient tone */
-
-  /* Depth + Glow */
-  --shadow: 0 4px 18px rgba(58, 156, 255, 0.08);
-}
-
-/* --------------------------------------------- */
-/* Global Styles */
-html,
-body,
-#__next {
-  height: 100%;
-}
-
+/* Light mode default background (premium off-white) */
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  line-height: 1.6;
-  transition: background var(--transition), color var(--transition);
-  -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth;
+  @apply bg-gray-100 text-gray-900 antialiased;
 }
 
-/* --------------------------------------------- */
-/* Scrollbar */
+/* Dark mode */
+.dark body {
+  @apply bg-slate-900 text-slate-100;
+}
+
+/* ---------------------- */
+/*        CARDS            */
+/* ---------------------- */
+.card {
+  @apply bg-white border border-gray-200 rounded-2xl shadow-sm;
+}
+.dark .card {
+  @apply bg-slate-800 border-slate-700 shadow-md;
+}
+
+/* ---------------------- */
+/*     FORM ELEMENTS       */
+/* ---------------------- */
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  @apply 
+    bg-gray-50 text-gray-900 border border-gray-300 
+    dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700
+    rounded-md px-3 py-2 w-full
+    transition-colors transition-shadow duration-150 ease-in-out;
+}
+
+/* Hover */
+input:hover,
+select:hover,
+textarea:hover {
+  @apply border-gray-400 dark:border-slate-500;
+}
+
+/* Focus */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  @apply 
+    border-blue-500 dark:border-blue-400 
+    ring-2 ring-blue-300/30 dark:ring-blue-500/30;
+}
+
+/* Placeholder contrast */
+::placeholder {
+  @apply text-gray-500;
+}
+.dark ::placeholder {
+  @apply text-slate-400;
+}
+
+/* Remove default outline */
+:focus {
+  outline: none;
+}
+
+/* ---------------------- */
+/*       HELP TEXT         */
+/* ---------------------- */
+.hint {
+  @apply text-sm text-gray-500;
+}
+.dark .hint {
+  @apply text-sm text-slate-400;
+}
+
+/* ---------------------- */
+/*     SCROLLBARS          */
+/* ---------------------- */
+/* Optional — looks more premium */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
+  @apply bg-gray-400 dark:bg-slate-600 rounded-full;
 }
-.light ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+::-webkit-scrollbar-track {
+  @apply bg-gray-200 dark:bg-slate-800;
 }
-
-/* --------------------------------------------- */
-/* Panels / Cards */
-.card {
-  background: linear-gradient(180deg, rgba(20, 24, 28, 0.9), rgba(12, 14, 16, 0.8));
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: all var(--transition);
-  backdrop-filter: blur(var(--blur));
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(95, 191, 253, 0.15);
-  border-color: rgba(95, 191, 253, 0.25);
+/* ---------------------------
+   Premium Glass Input (Option A)
+--------------------------- */
+.input {
+  @apply w-full px-3 py-2 rounded-lg outline-none transition
+         bg-white/40 dark:bg-white/5
+         border border-gray-300/60 dark:border-white/10
+         text-gray-900 dark:text-gray-100
+         backdrop-blur-md shadow-sm
+         placeholder-gray-500 dark:placeholder-gray-400;
 }
 
-/* Light Mode Cards */
-.light .card {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F3F8FF 100%);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 6px 16px rgba(58, 156, 255, 0.05);
+/* Hover */
+.input:hover {
+  @apply border-gray-400/80 dark:border-white/20;
 }
 
-.light .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(58, 156, 255, 0.12);
-  border-color: rgba(58, 156, 255, 0.15);
-}
-
-/* --------------------------------------------- */
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1.2rem;
-  border-radius: 10px;
-  font-weight: 600;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #041a25;
-  transition: transform var(--transition), filter var(--transition), box-shadow var(--transition);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.12);
-  box-shadow: 0 4px 14px rgba(58, 156, 255, 0.35);
-}
-
-.btn:active {
-  transform: translateY(0);
-  filter: brightness(0.95);
-}
-
-/* --------------------------------------------- */
-/* Sidebar + Header */
-aside,
-header {
-  background: var(--panel);
-  border-color: rgba(255, 255, 255, 0.05);
-  transition: background var(--transition), border-color var(--transition);
-}
-
-aside {
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-}
-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Light mode sidebar/header */
-.light aside {
-  background: var(--panel);
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.light header {
-  background: var(--panel);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/* Highlight active sidebar item */
-.light .active-link,
-.light .sidebar-item.active {
-  background: rgba(58, 156, 255, 0.12);
-  border-left: 3px solid var(--accent);
-  color: var(--accent);
-  font-weight: 600;
-  transition: all var(--transition);
-}
-
-/* --------------------------------------------- */
-/* Text Helpers */
-.hint {
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-a {
-  color: var(--accent);
-  transition: color var(--transition);
-}
-
-a:hover {
-  color: var(--accent-2);
-  text-shadow: 0 0 6px rgba(58, 156, 255, 0.3);
-}
-
-/* --------------------------------------------- */
-/* Utility Animations */
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 0.6s forwards ease-in-out;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-.glow {
-  text-shadow: 0 0 12px var(--accent);
+/* Focus */
+.input:focus {
+  @apply border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/30 dark:ring-blue-400/20;
 }
