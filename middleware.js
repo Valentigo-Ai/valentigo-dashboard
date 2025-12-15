@@ -5,9 +5,10 @@ export async function middleware(request) {
   const response = NextResponse.next();
   const pathname = request.nextUrl.pathname;
 
-  // ✅ ALWAYS allow Supabase auth routes
+  // ✅ ALWAYS allow auth-related routes
   if (
     pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/auth/callback")
   ) {
     return response;
@@ -22,20 +23,19 @@ export async function middleware(request) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Protected pages
   const protectedRoutes = ["/dashboard", "/ai", "/listings"];
   const isProtected = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
 
-  // 1️⃣ Not logged in → redirect to /login
+  // 🔒 Not logged in → redirect
   if (isProtected && !session) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // 2️⃣ Logged in → block /login
+  // 🚫 Logged in → block login page
   if (session && pathname.startsWith("/login")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
