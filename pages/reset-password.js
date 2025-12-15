@@ -9,16 +9,22 @@ const supabase = createClient(
 
 export default function ResetPassword() {
   const router = useRouter();
-  const { access_token, refresh_token, type } = router.query;
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
 
-  // ✅ CRITICAL: exchange tokens for session
+  // ✅ READ TOKENS FROM URL HASH
   useEffect(() => {
-    if (!router.isReady) return;
+    if (typeof window === "undefined") return;
+
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
+    const type = params.get("type");
 
     if (type !== "recovery" || !access_token || !refresh_token) {
       setMessage("Invalid or expired reset link.");
@@ -37,7 +43,7 @@ export default function ResetPassword() {
           setReady(true);
         }
       });
-  }, [router.isReady, access_token, refresh_token, type]);
+  }, []);
 
   const handleReset = async () => {
     if (password !== confirm) {
