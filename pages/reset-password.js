@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { createClient } from "@supabase/supabase-js";
 
+// ✅ Supabase client (client-side)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -14,59 +15,63 @@ export default function ResetPassword() {
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // ✅ READ TOKENS FROM URL HASH
+  // ✅ MODERN SUPABASE RESET FLOW
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const init = async () => {
+      const { data, error } = await supabase.auth.getSession();
 
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
+      if (error || !data?.session) {
+        setMessage("Invalid or expired reset link.");
+        return;
+      }
 
-    const access_token = params.get("access_token");
-    const refresh_token = params.get("refresh_token");
-    const type = params.get("type");
+      setReady(true);
+    };
 
-    if (type !== "recovery" || !access_token || !refresh_token) {
-      setMessage("Invalid or expired reset link.");
-      return;
-    }
-
-    supabase.auth
-      .setSession({
-        access_token,
-        refresh_token,
-      })
-      .then(({ error }) => {
-        if (error) {
-          setMessage("Reset link expired or already used.");
-        } else {
-          setReady(true);
-        }
-      });
+    init();
   }, []);
 
   const handleReset = async () => {
-    if (password !== confirm) {
-      setMessage("Passwords do not match");
+    if (password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
       return;
     }
+
+    if (password !== confirm) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
 
     const { error } = await supabase.auth.updateUser({
       password,
     });
 
+    setLoading(false);
+
     if (error) {
       setMessage(error.message);
     } else {
-      setMessage("Password updated successfully!");
+      setMessage("✅ Password updated successfully!");
       setTimeout(() => router.push("/login"), 1500);
     }
   };
 
-  if (!ready) return <p>{message || "Validating reset link..."}</p>;
+  // ⏳ Waiting for Supabase to validate session
+  if (!ready) {
+    return (
+      <div style={{ maxWidth: 400, margin: "60px auto", textAlign: "center" }}>
+        <p>{message || "Validating reset link..."}</p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ maxWidth: 400, margin: "50px auto" }}>
+    <div style={{ maxWidth: 400, margin: "60px auto" }}>
       <h1>Reset Password</h1>
 
       <input
@@ -74,6 +79,7 @@ export default function ResetPassword() {
         placeholder="New password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        style={{ width: "100%", marginBottom: 10, padding: 8 }}
       />
 
       <input
@@ -81,11 +87,26 @@ export default function ResetPassword() {
         placeholder="Confirm password"
         value={confirm}
         onChange={(e) => setConfirm(e.target.value)}
+        style={{ width: "100%", marginBottom: 10, padding: 8 }}
       />
 
-      <button onClick={handleReset}>Update password</button>
+      <button
+        onClick={handleReset}
+        disabled={loading}
+        style={{
+          width: "100%",
+          padding: 10,
+          cursor: loading ? "not-allowed" : "pointer",
+        }}
+      >
+        {loading ? "Updating..." : "Update password"}
+      </button>
 
-      {message && <p>{message}</p>}
+      {message && (
+        <p style={{ marginTop: 15, color: message.startsWith("✅") ? "green" : "red" }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }
