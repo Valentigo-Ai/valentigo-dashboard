@@ -3,11 +3,10 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabaseBrowserClient } from "../lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
-  const supabase = getSupabaseBrowserClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,7 +44,6 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* Password field + eye toggle */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -64,7 +62,6 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Forgot Password link */}
           <div className="text-right -mt-2">
             <a
               href="/forgot-password"
