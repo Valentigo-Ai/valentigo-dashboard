@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { createClient } from "@supabase/supabase-js";
-
-// ✅ Supabase client (client-side)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import { supabase } from "../lib/supabaseClient";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -17,7 +11,6 @@ export default function ResetPassword() {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ✅ MODERN SUPABASE RESET FLOW
   useEffect(() => {
     const init = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -47,9 +40,7 @@ export default function ResetPassword() {
     setLoading(true);
     setMessage("");
 
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
+    const { error } = await supabase.auth.updateUser({ password });
 
     setLoading(false);
 
@@ -61,7 +52,6 @@ export default function ResetPassword() {
     }
   };
 
-  // ⏳ Waiting for Supabase to validate session
   if (!ready) {
     return (
       <div style={{ maxWidth: 400, margin: "60px auto", textAlign: "center" }}>
@@ -93,11 +83,7 @@ export default function ResetPassword() {
       <button
         onClick={handleReset}
         disabled={loading}
-        style={{
-          width: "100%",
-          padding: 10,
-          cursor: loading ? "not-allowed" : "pointer",
-        }}
+        style={{ width: "100%", padding: 10 }}
       >
         {loading ? "Updating..." : "Update password"}
       </button>
