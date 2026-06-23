@@ -105,7 +105,7 @@ Write the listing description now.`;
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-lite",
       generationConfig: {
         temperature: mode === "moreDetail" ? 1.1 : 0.9,
         topP: 0.92,
