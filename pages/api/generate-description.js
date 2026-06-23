@@ -122,7 +122,7 @@ Write the listing description now.`;
     } catch (err) {
       const is503 = err.message?.includes("503") || err.status === 503;
       if (!is503) throw err;
-      console.warn("gemini-2.5-flash returned 503, retrying with gemini-3-flash...");
+      console.warn("gemini-2.5-flash returned 503, retrying with gemini-2.5-flash-lite...");
       text = await tryModel("gemini-2.5-flash-lite");
     }
 
