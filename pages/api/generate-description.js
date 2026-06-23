@@ -102,19 +102,29 @@ ${brief}
 
 Write the listing description now.`;
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      generationConfig: {
-        temperature: mode === "moreDetail" ? 1.1 : 0.9,
-        topP: 0.92,
-        maxOutputTokens: mode === "moreDetail" ? 700 : 350,
-      },
-    });
+  const generationConfig = {
+    temperature: mode === "moreDetail" ? 1.1 : 0.9,
+    topP: 0.92,
+    maxOutputTokens: mode === "moreDetail" ? 700 : 350,
+  };
 
+  const tryModel = async (modelName) => {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: modelName, generationConfig });
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    return result.response.text();
+  };
+
+  try {
+    let text;
+    try {
+      text = await tryModel("gemini-2.5-flash");
+    } catch (err) {
+      const is503 = err.message?.includes("503") || err.status === 503;
+      if (!is503) throw err;
+      console.warn("gemini-2.5-flash returned 503, retrying with gemini-3-flash...");
+      text = await tryModel("gemini-3-flash");
+    }
 
     if (!text) {
       return res.status(500).json({ error: "Gemini returned an empty response." });
