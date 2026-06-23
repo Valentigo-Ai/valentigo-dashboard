@@ -111,10 +111,15 @@ export default function PropertyDescriptionGenerator() {
       });
 
       const data = await res.json();
-      setResult(data.description || "No description returned from AI.");
+
+      if (!res.ok || data.error) {
+        setResult(`Error: ${data.error || "Unknown error from server."}`);
+      } else {
+        setResult(data.description || "The AI returned an empty response.");
+      }
     } catch (err) {
       console.error(err);
-      setResult("Something went wrong while generating the description.");
+      setResult(`Error: ${err.message || "Could not reach the server."}`);
     }
 
     setLoading(false);
