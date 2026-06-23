@@ -23,9 +23,9 @@ export async function middleware(request) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const protectedRoutes = ["/dashboard", "/ai", "/listings"];
+  const protectedRoutes = ["/", "/generator", "/leads", "/settings", "/ai-tools"];
   const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname === route || (route !== "/" && pathname.startsWith(route))
   );
 
   // 🔒 Not logged in → redirect
@@ -35,9 +35,9 @@ export async function middleware(request) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 🚫 Logged in → block login page
-  if (session && pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // 🚫 Logged in → block login/signup pages
+  if (session && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;

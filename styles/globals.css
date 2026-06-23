@@ -5,9 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Accent color */
+/* Design tokens — light mode */
 :root {
-  --accent: #3a9cff;
+  --accent:   #3a9cff;
+  --accent-2: #6EC1E4;
+  --bg:       #f3f4f6;
+  --panel:    #ffffff;
+  --text:     #111827;
+  --muted:    #6b7280;
+  --shadow:   0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+}
+
+/* Design tokens — dark mode */
+.dark {
+  --bg:       #0e1113;
+  --panel:    #0f1417;
+  --text:     #e2e8f0;
+  --muted:    #9aa6ad;
+  --shadow:   0 1px 3px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
 }
 
 /* ---------------------- */
@@ -122,4 +137,15 @@ button:focus {
 /* Focus */
 .input:focus {
   @apply border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/30 dark:ring-blue-400/20;
+}
+
+/* ---------------------- */
+/*       BUTTON            */
+/* ---------------------- */
+.btn {
+  @apply inline-flex items-center justify-center
+         px-4 py-2 rounded-lg text-sm font-medium
+         bg-[var(--accent)] text-white
+         hover:opacity-90 active:opacity-80
+         transition-opacity duration-150;
 }
