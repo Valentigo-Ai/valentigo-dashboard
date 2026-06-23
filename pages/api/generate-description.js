@@ -1,14 +1,14 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  console.log("GEMINI KEY PREFIX:", apiKey ? apiKey.slice(0, 8) : "NOT SET");
+  const apiKey = process.env.GROQ_API_KEY;
+  console.log("GROQ KEY PREFIX:", apiKey ? apiKey.slice(0, 8) : "NOT SET");
   if (!apiKey) {
-    return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
+    return res.status(500).json({ error: "GROQ_API_KEY is not configured on the server." });
   }
 
   const { propertyDetails, tone = "professional", mode = "standard" } = req.body;
@@ -102,38 +102,25 @@ ${brief}
 
 Write the listing description now.`;
 
-  const generationConfig = {
-    temperature: mode === "moreDetail" ? 1.1 : 0.9,
-    topP: 0.92,
-    maxOutputTokens: mode === "moreDetail" ? 4096 : 2048,
-  };
-
-  const tryModel = async (modelName) => {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: modelName, generationConfig });
-    const result = await model.generateContent(prompt);
-    return result.response.text();
-  };
-
   try {
-    let text;
-    try {
-      text = await tryModel("gemini-2.5-flash");
-    } catch (err) {
-      const is503 = err.message?.includes("503") || err.status === 503;
-      if (!is503) throw err;
-      console.warn("gemini-2.5-flash returned 503, retrying with gemini-2.5-flash-lite...");
-      await new Promise((r) => setTimeout(r, 3000));
-      text = await tryModel("gemini-2.5-flash-lite");
-    }
+    const groq = new Groq({ apiKey });
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: mode === "moreDetail" ? 1.1 : 0.9,
+      top_p: 0.92,
+      max_tokens: mode === "moreDetail" ? 4096 : 2048,
+    });
+
+    const text = completion.choices[0]?.message?.content;
 
     if (!text) {
-      return res.status(500).json({ error: "Gemini returned an empty response." });
+      return res.status(500).json({ error: "Groq returned an empty response." });
     }
 
     return res.status(200).json({ description: text });
   } catch (err) {
-    console.error("Gemini error:", err);
+    console.error("Groq error:", err);
     return res.status(500).json({ error: err.message || "Failed to generate description." });
   }
 }
