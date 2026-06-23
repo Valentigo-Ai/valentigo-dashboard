@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
+  console.log("GEMINI KEY PREFIX:", apiKey ? apiKey.slice(0, 8) : "NOT SET");
   if (!apiKey) {
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
   }
@@ -104,7 +105,7 @@ Write the listing description now.`;
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: mode === "moreDetail" ? 1.1 : 0.9,
         topP: 0.92,
