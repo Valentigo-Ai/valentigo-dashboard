@@ -105,7 +105,7 @@ Write the listing description now.`;
   const generationConfig = {
     temperature: mode === "moreDetail" ? 1.1 : 0.9,
     topP: 0.92,
-    maxOutputTokens: mode === "moreDetail" ? 700 : 350,
+    maxOutputTokens: mode === "moreDetail" ? 4096 : 2048,
   };
 
   const tryModel = async (modelName) => {
