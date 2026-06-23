@@ -25,8 +25,7 @@ export default function LoginPage() {
     if (error) {
       setMessage(error.message);
     } else {
-      setMessage("✅ Logged in successfully! Redirecting...");
-      setTimeout(() => router.push("/"), 800);
+      router.push("/");
     }
   }
 
