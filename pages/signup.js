@@ -21,7 +21,7 @@ export default function Signup(){
         <form onSubmit={submit} className="card p-8">
           <h1 className="text-2xl font-semibold" style={{color:"var(--accent)"}}>Create a Valentigo account</h1>
           <label className="block mt-4" style={{color:"#9aa6ad"}}>Email</label>
-          <input type="email" className="mt-1 px-3 py-2 rounded-md border w-full bg-transparent text-white" value={email} onChange={e=>setEmail(e.target.value)} required />
+          <input type="email" className="mt-1 px-3 py-2 rounded-md border w-full bg-transparent text-gray-900" value={email} onChange={e=>setEmail(e.target.value)} required />
           <button className="mt-6 btn w-full">Create account</button>
         </form>
       </div>
